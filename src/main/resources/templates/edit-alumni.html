@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑校友信息</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; padding: 40px; }
+        .edit-container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #004ea2; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #004ea2; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #888; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="edit-container">
+    <h2>✎ 修改校友信息</h2>
+    <form th:action="@{/update-alumni}" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" name="id" th:value="${alumni.id}">
+
+        <label>姓名：</label>
+        <input type="text" name="name" th:value="${alumni.name}" required>
+
+        <label>专业：</label>
+        <input type="text" name="major" th:value="${alumni.major}" required>
+
+        <label>邮箱：</label>
+        <input type="email" name="email" th:value="${alumni.email}" required>
+
+        <label>电话：</label>
+        <input type="text" name="phone" th:value="${alumni.phone}">
+
+        <div style="margin: 15px 0;">
+            <p style="font-size: 13px; color: #666;">当前头像：</p>
+            <img th:if="${alumni.avatar}" th:src="@{'/pics/' + ${alumni.avatar}}" width="100" style="border-radius: 8px;">
+            <input type="file" name="imageFile" accept="image/*">
+            <input type="hidden" name="avatar" th:value="${alumni.avatar}">
+        </div>
+
+        <button type="submit">保存并更新</button>
+        <a th:href="@{/alumni-wall}" class="back-link">返回荣誉墙</a>
+    </form>
+</div>
+</body>
+</html>
