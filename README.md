@@ -3,6 +3,9 @@
 
 A simple Spring Boot application for managing and displaying alumni information.
 
+![Project Demo](images/p1.png)
+![Project Demo](images/p2.png)
+
 ## Features
 
 * **Statistics**: Shows total alumni count with a live counter.
