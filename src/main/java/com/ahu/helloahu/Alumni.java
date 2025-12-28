@@ -1,39 +1,20 @@
-package com.ahu.helloahu;
+package com.ahu.helloahu; // 1. 修改为匹配你目前的文件夹路径
 
-import jakarta.persistence.*;
+import com.baomidou.mybatisplus.annotation.IdType; // 2. 注意这里没有横杠！
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
-@Entity // 告诉 Spring Boot 这是一个数据库实体类
-@Table(name = "alumni") // 指定数据库表名
+@Data // 自动生成 Getter/Setter
+@TableName("alumni") // 明确对应数据库里的表名
 public class Alumni {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 主键自增
+    @TableId(type = IdType.AUTO) // 指定主键自增策略
     private Long id;
 
-    private String name;    // 姓名
-    private String major;   // 专业
-    private String email;   // 邮箱
+    private String name;
+    private String major;
+    private String email;
     private String phone;
-    private String avatar; // 存放图片的文件名
-
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    // 标准 Getter 和 Setter（手动保留，不依赖 Lombok 插件）
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getMajor() { return major; }
-    public void setMajor(String major) { this.major = major; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    private String avatar;
 }

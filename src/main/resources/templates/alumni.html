@@ -16,7 +16,6 @@
     .container { max-width: 1200px; margin: auto; }
     h2 { text-align: center; color: #004ea2; margin-bottom: 30px; font-size: 28px; }
 
-
     /* 2. 表单区域：搜索与添加并排 */
     .forms-section {
       background: white;
@@ -58,6 +57,7 @@
       flex-wrap: wrap;
       gap: 25px;
       justify-content: center;
+      margin-bottom: 40px;
     }
     .alumni-card {
       background: white;
@@ -106,22 +106,16 @@
     }
     .detail-info { font-size: 13px; color: #888; margin: 4px 0; }
 
-
-    /* 6. 功能按钮：删除 */
-
+    /* 6. 功能图标 */
     .edit-icon {
       position: absolute;
       top: 15px;
-      right: 45px; /* 这里是关键：设为 45px，正好在删除按钮(15px)的左边 */
+      right: 45px;
       color: #004ea2;
       text-decoration: none;
       font-size: 18px;
       line-height: 1;
-      transition: color 0.2s;
     }
-    .edit-icon:hover { color: #1890ff; }
-
-
     .delete-icon {
       position: absolute;
       top: 15px;
@@ -132,7 +126,6 @@
       line-height: 1;
     }
     .delete-icon:hover { color: #ff4d4f; }
-
     .card-footer {
       margin-top: 15px;
       padding-top: 12px;
@@ -141,9 +134,44 @@
       color: #bfbfbf;
     }
 
+    /* 7. 分页条专用美化样式 */
+    .pagination-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      text-align: center;
+      margin-top: 30px;
+    }
+    .pagination-container p { color: #888; font-size: 14px; margin-bottom: 15px; }
+    .pagination-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      align-items: center;
+    }
+    .page-link {
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s;
+      border: 1px solid #004ea2;
+      color: #004ea2;
+    }
+    .page-link:hover { background: #e6f7ff; }
+    .page-link.active {
+      background: #004ea2;
+      color: white;
+    }
+    .page-link.disabled {
+      border-color: #d9d9d9;
+      color: #bfbfbf;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
   </style>
 </head>
-
 
 <body>
 
@@ -154,7 +182,6 @@
        style="color: #004ea2; text-decoration: none; font-size: 14px; border: 1px solid #004ea2; padding: 4px 12px; border-radius: 4px;">
       🔐 管理员登录
     </a>
-
     <div th:if="${session.isAdmin != null}">
       <span style="font-size: 14px; color: #666;">当前身份：🎓 系统管理员 | </span>
       <a th:href="@{/logout}" style="color: #ff4d4f; text-decoration: none; font-size: 14px; font-weight: bold;">退出登录</a>
@@ -172,22 +199,12 @@
   <div class="forms-section">
     <div class="form-group">
       <h3>加入荣誉墙</h3>
-
-      <form th:if="${session.isAdmin}" th:action="@{/add-alumni}" method="post" enctype="multipart/form-data">
-        <button type="submit">提交信息</button>
-      </form>
-
       <div th:unless="${session.isAdmin}"
-           style="background: #fffbe6; border: 1px solid #ffe58f; padding: 20px; border-radius: 8px; text-align: center;">
-        <p style="color: #856404; font-size: 14px; margin-bottom: 10px;">
-          🔒 <strong>温馨提示：</strong>
-        </p>
-        <p style="color: #666; font-size: 13px;">
-          您当前处于“访客预览模式”，无法直接登记信息。<br>
-          如需操作，请点击右上角进行 <a th:href="@{/login}" style="color: #004ea2; font-weight: bold;">管理员登录</a>。
+           style="background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 10px;">
+        <p style="color: #856404; font-size: 13px; margin: 0;">
+          🔒 <strong>访客预览模式：</strong> 请先登录管理员账号以登记信息。
         </p>
       </div>
-
       <form th:action="@{/add-alumni}" method="post" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="校友姓名" required>
         <input type="text" name="major" placeholder="所学专业" required>
@@ -218,14 +235,9 @@
 
   <div class="alumni-grid">
     <div class="alumni-card" th:each="person : ${alumniList}">
-      <a class="delete-icon"
-         th:if="${session.isAdmin}"
-         th:href="@{'/delete/' + ${person.id}}"
-         onclick="return confirm('确定移除吗？')">×</a>
-
-
-      <a class="edit-icon"
-         th:if="${session.isAdmin}"
+      <a class="delete-icon" th:if="${session.isAdmin}"
+         th:href="@{'/delete/' + ${person.id}}" onclick="return confirm('确定移除该校友吗？')">×</a>
+      <a class="edit-icon" th:if="${session.isAdmin}"
          th:href="@{'/edit/' + ${person.id}}">✎</a>
 
       <div class="avatar-wrapper">
@@ -235,7 +247,6 @@
 
       <h3 th:text="${person.name}">姓名</h3>
       <span class="major-tag" th:text="${person.major}">专业</span>
-
       <p class="detail-info">📧 <span th:text="${person.email}">邮箱</span></p>
       <p class="detail-info">📞 <span th:text="${person.phone != null ? person.phone : '未填写'}">电话</span></p>
 
@@ -244,27 +255,37 @@
       </div>
     </div>
   </div>
+
+  <div class="pagination-container" th:if="${pages > 0}">
+    <p>总计 [[${total}]] 位校友 | 当前第 [[${current}]] / [[${pages}]] 页</p>
+    <div class="pagination-nav">
+      <a th:href="@{/alumni-wall(pageNo=${current - 1})}"
+         class="page-link" th:classappend="${current == 1} ? 'disabled' : ''">上一页</a>
+
+      <span th:each="i : ${#numbers.sequence(1, pages)}">
+          <a th:href="@{/alumni-wall(pageNo=${i})}" th:text="${i}"
+             class="page-link" th:classappend="${i == current} ? 'active' : ''"></a>
+      </span>
+
+      <a th:href="@{/alumni-wall(pageNo=${current + 1})}"
+         class="page-link" th:classappend="${current == pages} ? 'disabled' : ''">下一页</a>
+    </div>
+  </div>
+
 </div>
 
 <script th:inline="javascript">
-  // 1. 直接通过 Thymeleaf 拿到后端传来的总数
   const target = /*[[${total}]]*/ 0;
-  let current = 0;
-
-  // 2. 通过 ID 找元素，这就稳如老狗了
+  let currentVal = 0;
   const element = document.getElementById('totalNumber');
 
   if (element && target > 0) {
-    // 先把显示的数字清零，准备开始跳
     element.innerText = "0";
-
     const timer = setInterval(() => {
-      current++;
-      element.innerText = current;
-      if (current >= target) {
-        clearInterval(timer);
-      }
-    }, 80); // 稍微调快一点点
+      currentVal++;
+      element.innerText = currentVal;
+      if (currentVal >= target) clearInterval(timer);
+    }, 50);
   }
 </script>
 
